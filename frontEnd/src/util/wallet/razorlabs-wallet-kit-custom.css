@@ -1,0 +1,91 @@
+:root {
+  /* Razor wallet css */
+  --wkit-accent-hs: transparent;
+  --wkit-on-accent-rgb: 255, 255, 255;
+  --wkit-bg-rgb: 239, 241, 245;
+  --wkit-on-bg-rgb: 10, 14, 34;
+  --wkit-font-family: "Basel", sans-serif;
+  --wkit-font-family-mono: "IBM Plex Mono", monospace;
+  --wkit-font-size-large: 14px;
+  --wkit-font-size-medium: 14px;
+  --wkit-font-size-small: 14px;
+  --wkit-line-height-large: 22px;
+  --wkit-line-height-medium: 20px;
+  --wkit-line-height-small: 17px;
+  --wkit-button-width: 284px;
+  --wkit-border-radius: 8px;
+}
+
+.wkit-button {
+  height: fit-content;
+  background-color: transparent;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+.wkit-connected-button {
+  background-color: transparent;
+  padding: 8px 16px 8px 16px;
+  border-radius: 1.2rem;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+.wkit-connected-container {
+  background-color: transparent;
+  border: 1px solid rgb(2 6 23 / 0.25);
+  color: rgb(2 6 23 / #020617);
+  border-radius: 1.2rem;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+.wkit-connected-container:hover {
+  background-color: rgb(2 6 23 / #020617);
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+.wkit-disconnect-button__container {
+  background-color: #ffecc4;
+  bottom: -40px;
+  color: rgb(2 6 23 / #020617);
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+  border-radius: 1.2rem;
+}
+
+.wkit-disconnect-button__container:hover {
+  background-color: #f1deb5;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+.wkit-disconnect-button {
+  padding: 8px 16px 8px 16px;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+  border-radius: 1.2rem;
+}
+
+.wkit-connected-button__balance {
+  color: rgb(2 6 23);
+  font-weight: 500;
+}
+
+.wkit-install__button {
+  color: #b44e0d;
+}
