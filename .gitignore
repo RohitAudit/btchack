@@ -7,6 +7,7 @@
 *.dll
 *.so
 *.dylib
+rooch/raga_finance/build/
 
 # Test binary, built with `go test -c`
 *.test
