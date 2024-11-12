@@ -144,7 +144,8 @@ const TokenBridge = () => {
         console.log("result?.data?", result?.data)
         const availableBalance = result?.data?.availableBalance || "0"
         console.log("fractal availableBalance", availableBalance)
-        dispatch(set_nETH_Balance(availableBalance.toString()))
+        const balance = parseInt(availableBalance) / 100000000
+        dispatch(set_nETH_Balance(balance.toString()))
       } else if (currentNetwork === "rooch") {
         if (unisatState.address) {
           const addr = new BitcoinAddress(unisatState.address)
