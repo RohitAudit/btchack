@@ -160,11 +160,11 @@ const TokenBridge = () => {
           })
 
           const result = await client.getBalances({
-            owner: genRoochHexAddr,
+            owner: genRoochHexAddr
           })
           console.log("rooch result", result)
-          console.log("rooch balance", result.data[0].balance)
-          const balance = parseInt(result.data[0].balance) / 100000000
+          console.log("rooch balance", result.data[1].balance)
+          const balance = parseInt(result.data[1].balance) / 100000000
           dispatch(set_nETH_Balance(balance.toString()))
         }
       }
@@ -280,8 +280,14 @@ const TokenBridge = () => {
         ? DestinationChainsMapping.fractal.destinationID
         : DestinationChainsMapping.rooch.destinationID
 
+    const addr = new BitcoinAddress(unisatState.address)
+
+    const roochAddr = addr.genRoochAddress()
+
+    const genRoochAddr = roochAddr.toBech32Address()
+    const genRoochHexAddr = roochAddr.toHexAddress()
     const userAddress =
-      currentNetwork === "fractal" ? unisatState.address : unisatState.publicKey
+      currentNetwork === "fractal" ? unisatState.address : genRoochHexAddr
 
     console.log("DestinationID", DestinationID)
     console.log("Input Value :", value)
