@@ -43,7 +43,12 @@ import { WalletSelector } from "@/components/Wallet/Aptos-shadcn"
 import { WalletName, useWallet } from "@aptos-labs/wallet-adapter-react"
 import { main } from "@/util/Contract/MovementFunctions"
 import { useSearchParams } from "next/navigation"
-
+import {
+  RoochClient,
+  getRoochNodeUrl,
+  BitcoinAddress,
+  RoochAddress,
+} from "@roochnetwork/rooch-sdk"
 import UniSatWallet from "../Wallet/uniSatWallet"
 type setnETHFormula = {
   BASE_POINT: number
@@ -119,26 +124,50 @@ const TokenBridge = () => {
 
   useEffect(() => {
     const get_nETH_Blance = async () => {
-      const response = await fetch(
-        `https://open-api-fractal-testnet.unisat.io/v1/indexer/address/${unisatState.address}/brc20/nativeETH/info`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_KEY}`,
-          },
+      if (currentNetwork === "fractal") {
+        const response = await fetch(
+          `https://open-api-fractal-testnet.unisat.io/v1/indexer/address/${unisatState.address}/brc20/nativeETH/info`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${process.env.NEXT_PUBLIC_BEARER_KEY}`,
+            },
+          }
+        )
+        if (!response.ok) {
+          console.error("Error in response")
         }
-      )
-      if (!response.ok) {
-        console.error("Error in response")
+
+        const result = await response.json()
+
+        console.log("result?.data?", result?.data)
+        const availableBalance = result?.data?.availableBalance || "0"
+        console.log("fractal availableBalance", availableBalance)
+        dispatch(set_nETH_Balance(availableBalance.toString()))
+      } else if (currentNetwork === "rooch") {
+        if (unisatState.address) {
+          const addr = new BitcoinAddress(unisatState.address)
+
+          const roochAddr = addr.genRoochAddress()
+
+          const genRoochAddr = roochAddr.toBech32Address()
+          const genRoochHexAddr = roochAddr.toHexAddress()
+
+          console.log("btc address", { addr, genRoochAddr, genRoochHexAddr })
+          const client = new RoochClient({
+            url: getRoochNodeUrl("testnet"),
+          })
+
+          const result = await client.getBalances({
+            owner: genRoochHexAddr,
+          })
+          console.log("rooch result", result)
+          console.log("rooch balance", result.data[0].balance)
+          const balance = parseInt(result.data[0].balance) / 100000000
+          dispatch(set_nETH_Balance(balance.toString()))
+        }
       }
-
-      const result = await response.json()
-
-      console.log("result?.data?", result?.data)
-      const availableBalance = result?.data?.availableBalance || "0"
-      console.log("availableBalance", availableBalance)
-      dispatch(set_nETH_Balance(availableBalance.toString()))
     }
 
     if (unisatState.connected) {
@@ -153,7 +182,7 @@ const TokenBridge = () => {
       dispatch(set_nETH_Balance("0.0"))
       setnETHBalanceLoading(false)
     }
-  }, [unisatState.connected, select_nETH_balance])
+  }, [unisatState.connected, select_nETH_balance, currentNetwork])
 
   // Fetches native balance and updates it when wallet is connected
   useEffect(() => {
@@ -251,6 +280,9 @@ const TokenBridge = () => {
         ? DestinationChainsMapping.fractal.destinationID
         : DestinationChainsMapping.rooch.destinationID
 
+    const userAddress =
+      currentNetwork === "fractal" ? unisatState.address : unisatState.publicKey
+
     console.log("DestinationID", DestinationID)
     console.log("Input Value :", value)
     console.log(
@@ -320,7 +352,7 @@ const TokenBridge = () => {
       TokenAddress = contractAddressesList[selectedNetwork.chainID].ETH
     }
 
-    console.log({ DepositArgument, TokenAddress })
+    console.log({ DepositArgument, TokenAddress, userAddress })
 
     console.log("value", parseEther(`${value}`))
 
@@ -330,7 +362,7 @@ const TokenBridge = () => {
     const tx = await DepositETH({
       deposit: DepositArgument,
       _tokenAddress: TokenAddress,
-      _receiver: unisatState.address || "0x",
+      _receiver: userAddress || "0x",
       _value: parseEther(`${value}`),
       _destID: DestinationID,
       _lzFee: 100000000,
@@ -389,6 +421,7 @@ const TokenBridge = () => {
         />
 
         <UniSatWallet onStateChange={handleUniSatStateChange} />
+
         <DepositButton
           handleClick={handleDepositFunc}
           isConnected={isConnected}
