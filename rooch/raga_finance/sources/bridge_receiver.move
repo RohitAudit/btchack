@@ -40,9 +40,9 @@ module raga_finance::bridge_receiver {
         let receiver_dest_id = get_destination();
         assert!(dest == receiver_dest_id, E_NOT_VALID_DESTINATION);
         if(transaction_type == 1) {
-            native_eth_coin::mint(admin, account, amount);
+            native_eth_coin::mint(admin, account, amount / 10000000000);
         } else if(transaction_type == 2) {
-            native_eth_coin::update_share_price(admin, amount);
+            native_eth_coin::update_share_price(admin, amount / 10000000000);
         } else {
             abort E_NOT_VALID_TRANSACTION_TYPE
         }
